@@ -3,55 +3,53 @@
  const path = require("path");
  const port = 3000;
 
-const fs = require ("fs");
-const { isUtf8 } = require("buffer");
-const data_file = path.join(__dirname , 'data','users.json')
+ const fs = require("fs");
 
-app.use(express.static(path.join(__dirname,'public')))
-app.use(express.static(path.join(__dirname,'view')))
+ const data_file = path.join(__dirname, 'data', 'users.json')
 
-app.use(express.json());
-app.use(express.urlencoded({
-    extended: true
-}));
+ app.use(express.static(path.join(__dirname, 'public')))
+    app.use(express.static(__dirname));
 
-function getUsers(){
-    const data = fs.readFileSync(data_file,'utf8');
-    const users = JSON.parse(data);
+ app.use(express.json());
+ app.use(express.urlencoded({
+     extended: true
+ }));
 
-    return users;
+ function getUsers() {
+     const data = fs.readFileSync(data_file, 'utf8');
+     const users = JSON.parse(data);
 
-}
+     return users;
 
-app.post('/login', (req, res) =>{
+ }
+ app.post("/login", (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
 
-    const {
-        email,
-        password,
-    }   = req.body;
+    const users = getUsers();
+    let foundUser = null;
+    // petite boucle toute simple
+    for (let i = 0; i < users.length; i++) {
+        const user = users[i];
 
-    users = getUsers();
-    users.forEach(user => {
-
-    if (email === user.email && password === user.password )
-    
-    return res.json({
-        user,
-        sucess:true
-    })
-    else{
-        return res.json({
-        success: false 
-        })
+        if (email === user.email && password === user.password) {
+            foundUser = user;
+            break;
+        }
     }
-
-})
-})
-app.listen(port,() =>{
-console.log("Serveur démarré sur http://localhost:" + port);
+    if (foundUser === null) {
+        // pas de match
+        return res.json({
+            success: false
+        });
+    }
+    // si on arrive ici, on a trouvé un user
+    return res.json({
+        success: true,
+        user: foundUser
+    });
 });
 
-
-    
-
-
+ app.listen(port, () => {
+     console.log("Serveur démarré sur http://localhost:" + port);
+ });
