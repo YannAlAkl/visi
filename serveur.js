@@ -49,6 +49,43 @@
         user: foundUser
     });
 });
+function saveUsers(users) {
+    const json = JSON.stringify(users, null, 2);
+    fs.writeFileSync(data_file, json, "utf8");
+}
+
+app.post("/profil", (req, res) => {
+    const id = req.body.id;
+    const nom = req.body.nom;
+    const abonnement = req.body.abonnement;
+    const users = getUsers();
+    let foundIndex = -1;
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].id == id) { // == pour accepter string ou number
+            foundIndex = i;
+            break;
+        }
+    }
+    if (foundIndex === -1) {
+        return res.json({
+            success: false,
+            message: "Utilisateur non trouvé"
+        });
+    }
+    if (nom) {
+        users[foundIndex].nom = nom;
+    }
+    if (abonnement) {
+        users[foundIndex].abonnement = abonnement;
+    }
+    saveUsers(users);
+    const updatedUser = users[foundIndex];
+
+    return res.json({
+        success: true,
+        user: updatedUser
+    });
+});
 
  app.listen(port, () => {
      console.log("Serveur démarré sur http://localhost:" + port);

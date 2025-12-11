@@ -1,5 +1,3 @@
-
-/** @param {User} user */
 const ProfilView = (user) => /*html*/`
     <div class="card">
         <img src="/img/image14.png" alt="Profil" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
@@ -10,9 +8,9 @@ const ProfilView = (user) => /*html*/`
     <div class="two-col" style="margin-top: 20px;">
         <div class="card">
             <h2>Informations du Compte</h2>
-            <form id="formProfil" action="" method="get" style="margin-top: 15px;">
+            <form id="formProfil" style="margin-top: 15px;">
                 <label for="nom">Nom Complet</label>
-                <input id="nom" name="nom" type="text" value="${user.nom}" disabled>
+                <input id="nom" name="nom" type="text" value="${user.nom}">
                 
                 <label for="email">Adresse Email</label>
                 <input id="email" name="email" type="email" value="${user.email}" disabled>
@@ -21,7 +19,11 @@ const ProfilView = (user) => /*html*/`
                 <input id="role" name="role" type="text" value="${user.role}" disabled>
                 
                 <label for="abonnement">Plan d'Adhésion</label>
-                <input id="abonnement" name="abonnement" type="text" value="${user.abonnement}" disabled>
+                <input id="abonnement" name="abonnement" type="text" value="${user.abonnement}">
+                
+                <button type="submit" class="btn btn-primary" style="margin-top: 15px;">
+                    Enregistrer
+                </button>
             </form>
         </div>
 
