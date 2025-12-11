@@ -22,8 +22,7 @@
                 break;
 
             case 4:
-                main.innerHTML = AppView();
-                initAppView();
+                    afficherActivites();
                 break;
 
             case 5:
@@ -58,6 +57,15 @@
         navElements.forEach(function (navElem) {
             navElem.addEventListener("click", gererNavigation);
         });
+    }
+   
+    
+    async function afficherActivites(){
+        const  reponse = await fetch('/items');
+        const json = await reponse.json();
+        console.log(json);
+       const data = json;
+       main.innerHTML = ItemsView(data);
     }
 
     // ------------------------------
@@ -180,99 +188,38 @@
         }
         initNavigation();
         initFormulaires();
+        initClick();
         main.innerHTML = AccueilView();
     }
+    function initClick(){
+        window.addEventListener('click',(e)=>{
+            const target = e.target;
+            const table = target.closest('table')
+            const action = target.dataset ? target.dataset.action : null;
+            if (target.id === "modal" || target.classList.contains("fermer")) {
+            const modal = document.getElementById("modal");
+            if (modal) {
 
-    document.addEventListener('DOMContentLoaded', init);
+                modal.classList.toggle("show");
+            }
+            return
+        }
+        if (action) {
+            ItemsClick(target, table, action);
+
+        }
+ 
+ 
+        })
+
+    }
+
+
+ document.addEventListener('DOMContentLoaded', init);
 })();
 
 
-// ------------------------------
-// Partie Exercices inchangée
-// ------------------------------
-class Exercise {
-    constructor(nom, type, duree) {
-        this.nom = nom;
-        this.type = type;
-        this.duree = duree;
-    }
-}
 
-const exercises = [
-    new Exercise("Squats", "Force", 15),
-    new Exercise("Course sur tapis", "Cardio", 20),
-    new Exercise("Pompes", "Force", 10),
-    new Exercise("Yoga", "Souplesse", 30),
-    new Exercise("HIIT", "Cardio", 25),
-];
 
-const AppView = () => `
-    <div class="card">
-        <h1 id="page-title">Votre Routine Fitness 💪</h1>
-        <p class="paragraphe">Gérez vos exercices : ajoutez, modifiez ou supprimez vos activités préférées.</p>
-        <form id="formExercise" style="margin-top: 20px;">
-            <input type="text" id="exercise-name" placeholder="Nom de l'exercice" required>
-            <input type="text" id="exercise-type" placeholder="Type (Force, Cardio, Souplesse)" required>
-            <input type="number" id="exercise-duration" placeholder="Durée (minutes)" required>
-            <button class="btn btn-primary" type="submit" style="margin-top: 10px;">Ajouter Exercice</button>
-        </form>
-        <div id="exercise-list" style="margin-top: 20px;"></div>
-    </div>
-`;
 
-function renderExercises() {
-    const listDiv = document.getElementById("exercise-list");
-    listDiv.innerHTML = "";
-    exercises.forEach((ex, index) => {
-        const div = document.createElement("div");
-        div.className = "card";
-        div.style.marginBottom = "12px";
-        div.innerHTML = `
-            <strong>${ex.nom}</strong> (${ex.type}) - ${ex.duree} min
-            <div style="margin-top: 8px;">
-                <button class="btn btn-ghost" data-action="edit" data-index="${index}">Modifier</button>
-                <button class="btn btn-ghost" data-action="delete" data-index="${index}">Supprimer</button>
-            </div>
-        `;
-        listDiv.appendChild(div);
-    });
-}
 
-function setupAppEvents() {
-    const form = document.getElementById("formExercise");
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const nom = document.getElementById("exercise-name").value.trim();
-        const type = document.getElementById("exercise-type").value.trim();
-        const duree = parseInt(document.getElementById("exercise-duration").value);
-        if (nom && type && duree > 0) {
-            exercises.push(new Exercise(nom, type, duree));
-            renderExercises();
-            form.reset();
-        }
-    });
-
-    document.getElementById("exercise-list").addEventListener("click", (e) => {
-        const btn = e.target;
-        const action = btn.dataset.action;
-        const index = btn.dataset.index;
-        if (action === "delete") {
-            exercises.splice(index, 1);
-            renderExercises();
-        } else if (action === "edit") {
-            const ex = exercises[index];
-            const newNom = prompt("Modifier le nom", ex.nom);
-            const newType = prompt("Modifier le type", ex.type);
-            const newDuree = prompt("Modifier la durée (minutes)", ex.duree);
-            if (newNom && newType && newDuree) {
-                exercises[index] = new Exercise(newNom, newType, parseInt(newDuree));
-                renderExercises();
-            }
-        }
-    });
-}
-
-function initAppView() {
-    renderExercises();
-    setupAppEvents();
-}

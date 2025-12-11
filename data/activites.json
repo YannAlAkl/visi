@@ -1,0 +1,32 @@
+[
+{
+  "id":1,
+  "nom":"Squats",
+  "type":"Force",
+   "durée": 15
+},
+{
+"id":2,
+"nom":"pompe",
+"type":"Force",
+ "durée": 10
+},
+{
+"id":3,
+"nom":"Course sur tapis",
+"type":"cardio",
+"durée": 20
+},
+{
+"id":4,
+"nom":"yoga",
+"type":"souples",
+"durée": 30
+},
+{
+"id":5,
+"nom":"HIT",
+"type":"cardio",
+"durée":20
+}  
+]
